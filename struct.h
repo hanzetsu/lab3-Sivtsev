@@ -1,4 +1,6 @@
 #pragma once
+#include <math.h>
+#include <string.h>
 
 enum type_of_house {panel,brick,monolithic};
 
@@ -14,3 +16,5 @@ struct house {
     unsigned short number_of_floors;
     float average_apartment_area;
 };
+
+int comparator(const void *a, const void *b);
