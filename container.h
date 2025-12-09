@@ -34,3 +34,10 @@ void container_clear(container *c);
 unsigned short container_get_size(const container *c);
 
 void container_swap(container* cont, unsigned short i, unsigned short j);
+
+void container_insert_at(struct container *c, unsigned short index, const void *value);
+
+void container_delete_at(struct container *c, unsigned short index);
+
+void container_from_array(struct container *c, const void *array, unsigned short count);
+void container_to_array(const struct container *c, void *array);

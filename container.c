@@ -241,20 +241,111 @@ void *container_get_index(container *container, unsigned short index)
     return value;
 }
 
-void container_swap(container* cont, unsigned short i, unsigned short j) {
-    struct container* c = (struct container*)cont;
-    
-    if (i >= c->size || j >= c->size || i == j) {
-        fprintf (stderr, "Нет таких индексов\n");
+void container_swap(container *cont, unsigned short i, unsigned short j)
+{
+    struct container *c = (struct container *)cont;
+
+    if (i >= c->size || j >= c->size || i == j)
+    {
+        fprintf(stderr, "Нет таких индексов\n");
     }
 
-    struct node* node_i = c->head;
-    struct node* node_j = c->head;
-    
-    for (unsigned short k = 0; k < i; k++) node_i = node_i->next;
-    for (unsigned short k = 0; k < j; k++) node_j = node_j->next;
-    
-    void* temp = node_i->value;
+    struct node *node_i = c->head;
+    struct node *node_j = c->head;
+
+    for (unsigned short k = 0; k < i; k++)
+        node_i = node_i->next;
+    for (unsigned short k = 0; k < j; k++)
+        node_j = node_j->next;
+
+    void *temp = node_i->value;
     node_i->value = node_j->value;
     node_j->value = temp;
+}
+
+void container_insert_at(struct container *c, unsigned short index, const void *value)
+{
+    if (index > c->size)
+    {
+        fprintf(stderr, "Индекс слишком большой\n");
+        exit(1);
+    }
+
+    if (index == 0)
+    {
+        container_push_front(value, c);
+        return;
+    }
+    if (index == c->size)
+    {
+        container_push_back(value, c);
+        return;
+    }
+
+    struct node *new_node = create_node(value, c->elem_size);
+    struct node *current = c->head;
+    for (unsigned short i = 0; i < index; ++i)
+    {
+        current = current->next;
+    }
+
+    new_node->prev = current->prev;
+    new_node->next = current;
+    current->prev->next = new_node;
+    current->prev = new_node;
+    c->size++;
+}
+
+void container_delete_at(struct container *c, unsigned short index)
+{
+    if (index >= c->size)
+    {
+        fprintf(stderr, "Индекс слишком большой\n");
+        exit(1);
+    }
+
+    if (index == 0)
+    {
+        container_delete_front(c);
+        return;
+    }
+    if (index == c->size - 1)
+    {
+        container_delete_back(c);
+        return;
+    }
+
+    struct node *current = c->head;
+    for (unsigned short i = 0; i < index; ++i)
+    {
+        current = current->next;
+    }
+
+    current->prev->next = current->next;
+    current->next->prev = current->prev;
+    free(current->value);
+    free(current);
+    c->size--;
+}
+
+void container_from_array(struct container *c, void *array, unsigned short count)
+{
+    const char *data = (const char *)array;
+    for (unsigned short i = 0; i < count; ++i)
+    {
+        container_push_back(data + i * c->elem_size, c);
+    }
+}
+
+void container_to_array(const struct container *c, void *array)
+{
+    char *data = (char *)array;
+    struct node *current = c->head;
+    unsigned short i = 0;
+    while (current != NULL)
+    {
+        memcpy(data + i * c->elem_size, current->value, c->elem_size);
+        current = current->next;
+        i++;
+    }
 }
