@@ -23,7 +23,7 @@ struct Iterator
 Iterator *iterator_begin(container *container)
 {
     Iterator *iterator = malloc(sizeof(Iterator));
-    if (!iterator)
+    if (iterator == NULL)
     {
         fprintf(stderr, "Не удалось выделить память под итератор\n");
         exit(1);
@@ -35,7 +35,7 @@ Iterator *iterator_begin(container *container)
 Iterator *iterator_end(container *container)
 {
     Iterator *iterator = malloc(sizeof(Iterator));
-    if (!iterator)
+    if (iterator == NULL)
     {
         fprintf(stderr, "Не удалось выделить память под итератор\n");
         exit(1);
@@ -79,7 +79,7 @@ void *iterator_get_value(Iterator *iterator)
     return NULL;
 }
 
-struct node *create_node(const void *value, uint64_t elem_size)
+static struct node *create_node(const void *value, uint64_t elem_size)
 {
     struct node *node = malloc(sizeof(struct node));
     if (node == NULL)
@@ -222,15 +222,15 @@ unsigned short container_get_size(const container *container)
     return container->size;
 }
 
-void *container_get_index(container *c, unsigned short index)
+void *container_get_index(container *container, unsigned short index)
 {
-    if (!c || index >= c->size)
+    if (!container || index >= container->size)
     {
         fprintf(stderr, "Слишком большой индекс\n");
         exit(1);
     }
 
-    Iterator *iterator = iterator_begin(c);
+    Iterator *iterator = iterator_begin(container);
     for (unsigned short i = 0; i < index; ++i)
     {
         iterator_next(iterator);
@@ -239,4 +239,22 @@ void *container_get_index(container *c, unsigned short index)
     void *value = iterator_get_value(iterator);
     iterator_destroy(iterator);
     return value;
+}
+
+void container_swap(container* cont, unsigned short i, unsigned short j) {
+    struct container* c = (struct container*)cont;
+    
+    if (i >= c->size || j >= c->size || i == j) {
+        fprintf (stderr, "Нет таких индексов\n");
+    }
+
+    struct node* node_i = c->head;
+    struct node* node_j = c->head;
+    
+    for (unsigned short k = 0; k < i; k++) node_i = node_i->next;
+    for (unsigned short k = 0; k < j; k++) node_j = node_j->next;
+    
+    void* temp = node_i->value;
+    node_i->value = node_j->value;
+    node_j->value = temp;
 }

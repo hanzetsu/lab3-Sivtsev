@@ -32,3 +32,5 @@ void container_delete_back(container *c);
 void container_clear(container *c);
 
 unsigned short container_get_size(const container *c);
+
+void container_swap(container* cont, unsigned short i, unsigned short j);
