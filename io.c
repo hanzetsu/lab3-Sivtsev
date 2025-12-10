@@ -116,8 +116,10 @@ void sort_mode(struct arguments *opts)
     if (in != stdin)
         fclose(in);
 
-    int descending = (opts->type_of_sort != NULL &&
-                      strcmp(opts->type_of_sort, "desc") == 0);
+    int descending = 1;
+    if (opts->type_of_sort != NULL &&
+        strcmp(opts->type_of_sort, "desc") == 0)
+        descending = 0;
 
     container_sort(cont, comparator, descending);
 
