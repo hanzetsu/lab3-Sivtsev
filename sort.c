@@ -1,6 +1,6 @@
 #include "sort.h"
 
-void container_sort(struct container *cont, comparator cmp, int descending)
+void container_sort(struct container *cont, int (*cmp)(const void *, const void *), int descending)
 {
     unsigned short size = container_get_size(cont);
     for (unsigned short i = 1; i < size; ++i)

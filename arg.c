@@ -13,7 +13,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
         {
             if (opts->mode != NULL)
             {
-                puts("Ошибка: можно указать только один режим (--sort, --generate, --print)");
+                fprintf(stderr, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
                 return 1;
             }
             opts->mode = "sort";
@@ -22,32 +22,30 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
         {
             if (opts->mode != NULL)
             {
-                puts("Ошибка: можно указать только один режим (--sort, --generate, --print)");
+                fprintf(stderr, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
                 return 1;
             }
             if (i + 1 < argcount)
             {
-                
-                
-                    char *end;
-                    unsigned long temp = strtoul(argvector[i + 1], &end, 10);
-                    if (*end != '\0')
-                    {
-                        puts("Ошибка: строка содержит недопустимые символы");
-                        return 1;
-                    }
-                    else if (temp > USHRT_MAX) // или просто с числом сравнить
-                    {
-                        puts("Ошибка: число слишком большое");
-                        return 1;
-                    }
-                    else
-                        opts->generate_N = (unsigned short)temp;
-                
+
+                char *end;
+                unsigned long temp = strtoul(argvector[i + 1], &end, 10);
+                if (*end != '\0')
+                {
+                    fprintf(stderr, "Ошибка: строка содержит недопустимые символы\n");
+                    return 1;
+                }
+                else if (temp > USHRT_MAX) // или просто с числом сравнить
+                {
+                    fprintf(stderr,"Ошибка: число слишком большое\n");
+                    return 1;
+                }
+                else
+                    opts->generate_N = (unsigned short)temp;
             }
             else
             {
-                puts("Вы не ввели параметр после флага");
+                fprintf(stderr, "Вы не ввели параметр после флага");
                 return 1;
             }
 
@@ -58,7 +56,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
             {
                 if (opts->mode != NULL)
                 {
-                    puts("Ошибка: можно указать только один режим (--sort, --generate, --print)");
+                    fprintf(stderr, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
                     return 1;
                 }
 
@@ -83,7 +81,7 @@ int get_arguments_input_output_files(struct arguments *opts, int argcount, char 
                 opts->output_file = argvector[i + 1];
             else
             {
-                puts("Вы не ввели параметр после флага");
+                fprintf(stderr, "Вы не ввели параметр после флага\n");
                 return 1;
             }
         }
@@ -97,7 +95,7 @@ int get_arguments_input_output_files(struct arguments *opts, int argcount, char 
                 opts->input_file = argvector[i + 1];
             else
             {
-                puts("Вы не ввели параметр после флага");
+                fprintf(stderr, "Вы не ввели параметр после флага");
                 return 1;
             }
         }
@@ -110,11 +108,11 @@ int get_arguments_type_of_sort(struct arguments *opts, int argcount, char *argve
     {
         if (strncmp(argvector[i], "--type=", 7) == 0)
         {
-            if (strcmp(argvector[i] + 7, "asc")==0 || strcmp(argvector[i] + 7, "desc")==0)
+            if (strcmp(argvector[i] + 7, "asc") == 0 || strcmp(argvector[i] + 7, "desc") == 0)
                 opts->type_of_sort = argvector[i] + 7;
             else
             {
-                puts("Ошибка: неправильный тип сортировки");
+                fprintf(stderr, "Ошибка: неправильный тип сортировки");
                 return 1;
             }
         }
@@ -122,17 +120,17 @@ int get_arguments_type_of_sort(struct arguments *opts, int argcount, char *argve
         {
             if (i + 1 < argcount)
             {
-                if (strcmp(argvector[i + 1], "asc") == 0 || strcmp(argvector[i+1], "desc") == 0)
+                if (strcmp(argvector[i + 1], "asc") == 0 || strcmp(argvector[i + 1], "desc") == 0)
                     opts->type_of_sort = argvector[i + 1];
                 else
                 {
-                    puts("Ошибка: неправильный тип сортировки");
+                    fprintf(stderr, "Ошибка: неправильный тип сортировки");
                     return 1;
                 }
             }
             else
             {
-                puts("Вы не ввели параметр после флага ");
+                fprintf(stderr, "Вы не ввели параметр после флага ");
                 return 1;
             }
         }
@@ -142,9 +140,9 @@ int get_arguments_type_of_sort(struct arguments *opts, int argcount, char *argve
 
 int get_arguments(int argcount, char *argvector[], struct arguments *opts)
 {
-    *opts = (struct arguments) {0};
+    *opts = (struct arguments){0};
     opts->type_of_sort = "asc";
-        if (get_arguments_mode(opts, argcount, argvector))
+    if (get_arguments_mode(opts, argcount, argvector))
         return 1;
 
     if (get_arguments_input_output_files(opts, argcount, argvector))

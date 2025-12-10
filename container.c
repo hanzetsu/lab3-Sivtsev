@@ -107,6 +107,26 @@ void container_init(struct container *container, uint64_t elem_size)
     container->size = 0;
 }
 
+container *container_create(uint64_t elem_size)
+{
+    container *c = malloc(sizeof(container));
+    if (c == NULL)
+    {
+        fprintf(stderr, "Не удалось выделить память под контейнер\n");
+        exit(1);
+    }
+    container_init(c, elem_size);
+    return c;
+}
+
+void container_destroy(container *c)
+{
+    if (!c)
+        return;
+    container_clear(c);
+    free(c);
+}
+
 void container_push_back(const void *value, struct container *container)
 {
     struct node *node = create_node(value, container->elem_size);
@@ -328,7 +348,7 @@ void container_delete_at(struct container *c, unsigned short index)
     c->size--;
 }
 
-void container_from_array(struct container *c, void *array, unsigned short count)
+void container_from_array(struct container *c, const void *array, unsigned short count)
 {
     const char *data = (const char *)array;
     for (unsigned short i = 0; i < count; ++i)

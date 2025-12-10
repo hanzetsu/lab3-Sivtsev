@@ -1,11 +1,18 @@
 #pragma once
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 
-enum type_of_house {panel,brick,monolithic};
+enum type_of_house
+{
+    panel,
+    brick,
+    monolithic
+};
 
-struct house {
-    
+struct house
+{
+
     char *name_of_the_developer;
     char *name_of_microdistrict;
     enum type_of_house house_type;
@@ -18,3 +25,5 @@ struct house {
 };
 
 int comparator(const void *a, const void *b);
+
+struct house generate_random_house(void);
