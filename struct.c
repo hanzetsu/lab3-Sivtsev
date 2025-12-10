@@ -91,8 +91,10 @@ static enum type_of_house random_house_type(void)
 struct house generate_random_house(void)
 {
     struct house h;
-    h.name_of_the_developer = strdup(developers[rand() % 5]);
-    h.name_of_microdistrict = strdup(districts[rand() % 5]);
+    strncpy(h.name_of_the_developer, developers[rand() % 5], MAX_STRING_LEN - 1);
+    h.name_of_the_developer[MAX_STRING_LEN - 1] = '\0';
+    strncpy(h.name_of_microdistrict, districts[rand() % 5], MAX_STRING_LEN - 1);
+    h.name_of_microdistrict[MAX_STRING_LEN - 1] = '\0';
     h.house_type = random_house_type();
     h.year_built = 1950 + rand() % 55;
     h.elevator = rand() % 2;

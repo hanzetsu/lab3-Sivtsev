@@ -2,6 +2,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#define MAX_STRING_LEN 100
 
 enum type_of_house
 {
@@ -13,8 +14,8 @@ enum type_of_house
 struct house
 {
 
-    char *name_of_the_developer;
-    char *name_of_microdistrict;
+    char name_of_the_developer[MAX_STRING_LEN];
+    char name_of_microdistrict[MAX_STRING_LEN];
     enum type_of_house house_type;
     unsigned short year_built;
     int elevator;
