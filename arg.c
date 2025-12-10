@@ -35,7 +35,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
                     fprintf(stderr, "Ошибка: строка содержит недопустимые символы\n");
                     return 1;
                 }
-                else if (temp > USHRT_MAX) // или просто с числом сравнить
+                else if (temp > 100)
                 {
                     fprintf(stderr,"Ошибка: число слишком большое\n");
                     return 1;
@@ -45,7 +45,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
             }
             else
             {
-                fprintf(stderr, "Вы не ввели параметр после флага");
+                fprintf(stderr, "Вы не ввели параметр после флага\n");
                 return 1;
             }
 

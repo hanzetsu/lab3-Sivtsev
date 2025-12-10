@@ -87,7 +87,6 @@ void read_csv(container *c, FILE *in)
         }
 
         h.house_type = (enum type_of_house)house_type_int;
-
         h.name_of_the_developer = strdup(dev);
         h.name_of_microdistrict = strdup(dist);
 
@@ -164,7 +163,7 @@ void print_mode(struct arguments *opts)
     if (in != stdin)
         fclose(in);
 
-    printf("%-15s | %-10s | %-11s | %-4s | %-3s | %-3s | %-8s | %-6s | %-8s\n",
+    printf("%-20s | %-15s | %-11s | %-4s | %-3s | %-3s | %-8s | %-6s | %-8s\n",
            "Developer",
            "District",
            "Type",
@@ -199,7 +198,7 @@ void print_mode(struct arguments *opts)
         if (h->trash_chute == 1)
             trash_str = "YES";
 
-        printf("%-15s | %-10s | %-11s | %-4hu | %-3s | %-3s | %-8hu | %-6hu | %8.2f\n",
+        printf("%-20s | %-15s | %-11s | %-4hu | %-3s | %-3s | %-8hu | %-6hu | %8.2f\n",
                h->name_of_the_developer,
                h->name_of_microdistrict,
                type_str,
