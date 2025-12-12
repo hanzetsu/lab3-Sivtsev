@@ -3,6 +3,7 @@
 void container_sort(struct container *cont, int (*cmp)(const void *, const void *), int descending)
 {
     unsigned short size = container_get_size(cont);
+    if (size <= 1) return;
     for (unsigned short i = 1; i < size; ++i)
     {
         unsigned short j = i;

@@ -93,7 +93,7 @@ static struct node *create_node(const void *value, uint64_t elem_size)
         fprintf(stderr, "Не удалось выделить память\n");
         exit(1);
     }
-    value = memcpy(node->value, value, elem_size);
+    memcpy(node->value, value, elem_size);
     node->prev = NULL;
     node->next = NULL;
     return node;
@@ -265,10 +265,13 @@ void container_swap(container *cont, unsigned short i, unsigned short j)
 {
     struct container *c = (struct container *)cont;
 
-    if (i >= c->size || j >= c->size || i == j)
+    if (i >= c->size || j >= c->size)
     {
         fprintf(stderr, "Нет таких индексов\n");
+        return;
     }
+    if (i == j)
+        return;
 
     struct node *node_i = c->head;
     struct node *node_j = c->head;
