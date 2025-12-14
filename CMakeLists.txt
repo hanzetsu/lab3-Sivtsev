@@ -15,3 +15,14 @@ add_executable(lab3
     struct.c
     io.c
 )
+
+add_executable(measure
+    measure.c
+    container.c
+    struct.c
+    sort.c
+)
+
+set_target_properties(measure PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
+)

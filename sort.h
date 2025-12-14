@@ -3,3 +3,4 @@
 #include "container.h"
 
 void container_sort(struct container *cont, int (*cmp)(const void *, const void *), int descending);
+void container_sort_quick(struct container *cont, int (*cmp)(const void *, const void *), int descending);

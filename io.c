@@ -130,12 +130,12 @@ void sort_mode(struct arguments *opts)
     if (in != stdin)
         fclose(in);
 
-    int descending = 1;
+    int descending = 0;
     if (opts->type_of_sort != NULL &&
         strcmp(opts->type_of_sort, "desc") == 0)
-        descending = 0;
+        descending = 1;
 
-    container_sort(cont, comparator, descending);
+    container_sort_quick(cont, comparator, descending);
 
     FILE *out = stdout;
     if (opts->output_file != NULL)

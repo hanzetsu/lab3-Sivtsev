@@ -144,6 +144,8 @@ int get_arguments_type_of_sort(struct arguments *opts, int argcount, char *argve
             }
         }
     }
+
+    return 0;
 }
 int get_arguments(int argcount, char *argvector[], struct arguments *opts)
 {

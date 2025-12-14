@@ -96,7 +96,7 @@ struct house generate_random_house(void)
     strncpy(h.name_of_microdistrict, districts[rand() % 5], MAX_STRING_LEN - 1);
     h.name_of_microdistrict[MAX_STRING_LEN - 1] = '\0';
     h.house_type = random_house_type();
-    h.year_built = 1950 + rand() % 55;
+    h.year_built = 1950 + rand() % 75;
     h.elevator = rand() % 2;
     h.trash_chute = rand() % 2;
     h.number_of_apartments = 50 + rand() % 451;
