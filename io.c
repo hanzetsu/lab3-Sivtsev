@@ -221,7 +221,7 @@ void print_mode(struct arguments *opts)
         }
     }
 
-    fprintf(out, "%-20s | %-15s | %-11s | %-4s | %-3s | %-3s | %-8s | %-6s | %-8s\n",
+    fprintf(out, "%-40s | %-30s | %-15s | %-4s | %-5s | %-5s | %-10s | %-8s | %-10s\n",
             "Developer",
             "District",
             "Type",
@@ -232,7 +232,7 @@ void print_mode(struct arguments *opts)
             "Floors",
             "Area");
 
-    fprintf(out, "-------------------------------------------------------------------------------\n");
+    fprintf(out, "------------------------------------------------------------------------------------------------------------\n");
 
     Iterator *it = iterator_begin(cont);
 
@@ -260,7 +260,7 @@ void print_mode(struct arguments *opts)
         else
             trash_str = "NO";
 
-        fprintf(out, "%-20s | %-15s | %-11s | %-4hu | %-3s | %-3s | %-8hu | %-6hu | %8.2f\n",
+        fprintf(out, "%-40.40s | %-30.30s | %-15.15s | %-4hu | %-5s | %-5s | %-10hu | %-8hu | %10.2f\n",
                 h->name_of_the_developer,
                 h->name_of_microdistrict,
                 type_str,
