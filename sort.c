@@ -81,9 +81,9 @@ static void quick_sort_recursive(struct container *cont, int low, int high,
 {
     if (low < high)
     {
-        int pi = partition(cont, low, high, cmp, descending);
-        quick_sort_recursive(cont, low, pi - 1, cmp, descending);
-        quick_sort_recursive(cont, pi + 1, high, cmp, descending);
+        int i = partition(cont, low, high, cmp, descending);
+        quick_sort_recursive(cont, low, i - 1, cmp, descending);
+        quick_sort_recursive(cont, i + 1, high, cmp, descending);
     }
 }
 

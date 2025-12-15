@@ -226,8 +226,8 @@ void print_mode(struct arguments *opts)
             "District",
             "Type",
             "Year",
-            "Elv",
-            "Trc",
+            "Elevator",
+            "Trash",
             "Apts",
             "Floors",
             "Area");
