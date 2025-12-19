@@ -14,6 +14,7 @@ add_executable(lab3
     sort.c
     struct.c
     io.c
+    log.c
 )
 
 add_executable(measure
@@ -21,6 +22,7 @@ add_executable(measure
     container.c
     struct.c
     sort.c
+    log.c
 )
 
 set_target_properties(measure PROPERTIES

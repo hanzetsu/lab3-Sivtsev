@@ -125,12 +125,17 @@ void sort_mode(struct arguments *opts)
     if (in != stdin)
         fclose(in);
 
-    int descending = 0;
-    if (opts->type_of_sort != NULL &&
-        strcmp(opts->type_of_sort, "desc") == 0)
-        descending = 1;
+    int (*cmp_func)(const void *, const void *);
+    if (strcmp(opts->type_of_sort, "desc") == 0)
+    {
+        cmp_func = comparator_desc;
+    }
+    else
+    {
+        cmp_func = comparator_asc;
+    }
 
-    container_sort_quick(cont, comparator, descending);
+    container_sort_quick(cont, cmp_func);
 
     FILE *out = stdout;
     if (opts->output_file != NULL)
@@ -150,7 +155,6 @@ void sort_mode(struct arguments *opts)
 
     container_destroy(cont);
 }
-
 void print_mode(struct arguments *opts)
 {
     container *cont = container_create(sizeof(struct house));
@@ -248,7 +252,7 @@ void print_mode(struct arguments *opts)
         else
             trash_str = "Нет";
 
-        fprintf(out, "%-40.40s | %-30.30s | %-15.15s | %-4hu | %-5s | %-5s | %-10hu | %-8hu | %10.2f\n",
+        fprintf(out, "%-30s | %-30s | %-15s | %-4hu | %-5s | %-5s | %-10hu | %-8hu | %10.2f\n",
                 h->name_of_the_developer,
                 h->name_of_microdistrict,
                 type_str,

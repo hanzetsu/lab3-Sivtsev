@@ -31,12 +31,12 @@ int main() {
         double time_insertion, time_quick;
         
         start = clock();
-        container_sort(cont_insertion, comparator, 0);
+        container_sort(cont_insertion, comparator_asc);
         end = clock();
         time_insertion = (double)(end - start) * 1000.0 / CLOCKS_PER_SEC;
         
         start = clock();
-        container_sort_quick(cont_quick, comparator, 0);
+        container_sort_quick(cont_quick, comparator_asc);
         end = clock();
         time_quick = (double)(end - start) * 1000.0 / CLOCKS_PER_SEC;
         

@@ -1,6 +1,6 @@
 #include "sort.h"
 
-void container_sort(struct container *cont, int (*cmp)(const void *, const void *), int descending)
+void container_sort(struct container *cont, int (*cmp)(const void *, const void *))
 {
     unsigned short size = container_get_size(cont);
     if (size <= 1)
@@ -14,7 +14,7 @@ void container_sort(struct container *cont, int (*cmp)(const void *, const void 
             void *val_j_minus_1 = container_get_index(cont, j - 1);
 
             int cmp_result = cmp(val_j, val_j_minus_1);
-            if ((cmp_result < 0 && !descending) || (cmp_result > 0 && descending))
+            if (cmp_result < 0)
             {
                 container_swap(cont, j, j - 1);
             }
@@ -28,7 +28,7 @@ void container_sort(struct container *cont, int (*cmp)(const void *, const void 
 }
 
 static int partition(struct container *cont, int low, int high,
-                     int (*cmp)(const void *, const void *), int descending)
+                     int (*cmp)(const void *, const void *))
 {
     void *pivot = container_get_index(cont, high);
     int i = low - 1;
@@ -37,32 +37,8 @@ static int partition(struct container *cont, int low, int high,
     {
         void *current = container_get_index(cont, j);
         int cmp_result = cmp(current, pivot);
-        int should_swap;
-
-        if (descending == 0)
-        {
-            if (cmp_result <= 0)
-            {
-                should_swap = 1;
-            }
-            else
-            {
-                should_swap = 0;
-            }
-        }
-        else
-        {
-            if (cmp_result >= 0)
-            {
-                should_swap = 1;
-            }
-            else
-            {
-                should_swap = 0;
-            }
-        }
-
-        if (should_swap == 1)
+        
+        if (cmp_result <= 0)  // Убрали проверку descending
         {
             i++;
             if (i != j)
@@ -77,17 +53,17 @@ static int partition(struct container *cont, int low, int high,
 }
 
 static void quick_sort_recursive(struct container *cont, int low, int high,
-                                 int (*cmp)(const void *, const void *), int descending)
+                                 int (*cmp)(const void *, const void *))
 {
     if (low < high)
     {
-        int i = partition(cont, low, high, cmp, descending);
-        quick_sort_recursive(cont, low, i - 1, cmp, descending);
-        quick_sort_recursive(cont, i + 1, high, cmp, descending);
+        int i = partition(cont, low, high, cmp);
+        quick_sort_recursive(cont, low, i - 1, cmp);
+        quick_sort_recursive(cont, i + 1, high, cmp);
     }
 }
 
-void container_sort_quick(struct container *cont, int (*cmp)(const void *, const void *), int descending)
+void container_sort_quick(struct container *cont, int (*cmp)(const void *, const void *))
 {
     unsigned short size = container_get_size(cont);
     if (size <= 1)
@@ -95,5 +71,5 @@ void container_sort_quick(struct container *cont, int (*cmp)(const void *, const
         return;
     }
 
-    quick_sort_recursive(cont, 0, size - 1, cmp, descending);
+    quick_sort_recursive(cont, 0, size - 1, cmp);
 }

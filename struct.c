@@ -1,6 +1,6 @@
 #include "struct.h"
 
-int comparator(const void *a, const void *b)
+int comparator_asc(const void *a, const void *b)
 {
     const struct house *house_a = (const struct house *)a;
     const struct house *house_b = (const struct house *)b;
@@ -78,6 +78,10 @@ int comparator(const void *a, const void *b)
     }
 
     return strcmp(house_a->name_of_the_developer, house_b->name_of_the_developer);
+}
+
+int comparator_desc(const void *a, const void *b) {
+    return -comparator_asc(a,b);
 }
 
 static const char *developers[] = {"ПИК", "Самолёт", "ЛСР", "Донстрой", "Группа Эталон"};

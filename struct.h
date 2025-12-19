@@ -28,6 +28,7 @@ struct house
     float average_apartment_area;
 };
 
-int comparator(const void *a, const void *b);
+int comparator_asc(const void *a, const void *b);
+int comparator_desc(const void *a, const void *b);
 
 struct house generate_random_house(void);
