@@ -1,13 +1,13 @@
 #include "io.h"
 #include "arg.h"
 #include <stdio.h>
+#include "log.h"
 
 void generate_mode(struct arguments *opts)
 {
     if (opts->generate_N == 0)
     {
-        fprintf(stderr, "Ошибка: количество генерируемых записей должно быть > 0\n");
-        exit(1);
+        logg(1,"Ошибка: количество генерируемых записей должно быть > 0\n");
     }
     FILE *out = stdout;
 
@@ -16,8 +16,7 @@ void generate_mode(struct arguments *opts)
         out = fopen(opts->output_file, "w");
         if (!out)
         {
-            fprintf(stderr, "Не удалось открыть файл вывода: %s\n", opts->output_file);
-            exit(1);
+            logg(1,"Не удалось открыть файл вывода: %s\n", opts->output_file);
         }
     }
 
@@ -41,8 +40,8 @@ void generate_mode(struct arguments *opts)
 }
 void write_csv(const container *c, FILE *out)
 {
-    Iterator *it = iterator_begin((container *)c);
-    while (iterator_is_valid(it))
+
+    foreach (c,it)
     {
         struct house *h = (struct house *)iterator_get_value(it);
         fprintf(out, "%s,%s,%d,%hu,%d,%d,%hu,%hu,%.2f\n",
@@ -51,14 +50,11 @@ void write_csv(const container *c, FILE *out)
                 h->house_type,
                 h->year_built,
                 h->elevator,
-                h->trash_chute,
+                h->trash,
                 h->number_of_apartments,
                 h->number_of_floors,
                 h->average_apartment_area);
-        iterator_next(it);
     }
-    iterator_destroy(it);
-    it = NULL;
 }
 
 void read_csv(container *c, FILE *in)
@@ -81,20 +77,20 @@ void read_csv(container *c, FILE *in)
                            &house_type_int,
                            &h.year_built,
                            &h.elevator,
-                           &h.trash_chute,
+                           &h.trash,
                            &h.number_of_apartments,
                            &h.number_of_floors,
                            &h.average_apartment_area);
 
         if (parsed != 9)
         {
-            fprintf(stderr, "неполная строка CSV: %s\n", line);
+            logg(0, "неполная строка CSV: %s\n", line);
             continue;
         }
 
         if (house_type_int < 0 || house_type_int > 2)
         {
-            fprintf(stderr, "некорректный тип дома: %d\n", house_type_int);
+            logg(0, "некорректный тип дома: %d\n", house_type_int);
             continue;
         }
 
@@ -119,9 +115,8 @@ void sort_mode(struct arguments *opts)
         in = fopen(opts->input_file, "r");
         if (!in)
         {
-            fprintf(stderr, "Не удалось открыть файл ввода: %s\n", opts->input_file);
             container_destroy(cont);
-            exit(1);
+            logg(1, "Не удалось открыть файл ввода: %s\n", opts->input_file);
         }
     }
 
@@ -143,9 +138,8 @@ void sort_mode(struct arguments *opts)
         out = fopen(opts->output_file, "w");
         if (!out)
         {
-            fprintf(stderr, "Не удалось открыть файл вывода: %s\n", opts->output_file);
             container_destroy(cont);
-            exit(1);
+            logg(1, "Не удалось открыть файл вывода: %s\n", opts->output_file);
         }
     }
 
@@ -169,36 +163,31 @@ void print_mode(struct arguments *opts)
         in = fopen(opts->input_file, "r");
         if (!in)
         {
-            fprintf(stderr, "Не удалось открыть файл ввода: %s\n", opts->input_file);
             container_destroy(cont);
-            exit(1);
+            logg(1, "Не удалось открыть файл ввода: %s\n", opts->input_file);
         }
     }
     else
     {
         printf("Введите имя файла для чтения: ");
         if (fgets(filename, sizeof(filename), stdin) == NULL)
-        {
-            fprintf(stderr, "Ошибка: не удалось прочитать имя файла из stdin\n");
-            container_destroy(cont);
-            exit(1);
-        }
 
-        filename[strcspn(filename, "\n")] = '\0';
+        {
+            container_destroy(cont);
+            logg(1, "Ошибка: не удалось прочитать имя файла из stdin\n");
+        }
 
         if (strlen(filename) == 0)
         {
-            fprintf(stderr, "Ошибка: не указано имя файла\n");
             container_destroy(cont);
-            exit(1);
+            logg(1, "Ошибка: не указано имя файла\n");
         }
 
         in = fopen(filename, "r");
         if (!in)
         {
-            fprintf(stderr, "Ошибка: не удалось открыть файл: %s\n", filename);
             container_destroy(cont);
-            exit(1);
+            logg(1, "Ошибка: не удалось открыть файл: %s\n", filename);
         }
     }
 
@@ -215,22 +204,21 @@ void print_mode(struct arguments *opts)
         out = fopen(opts->output_file, "w");
         if (!out)
         {
-            fprintf(stderr, "Ошибка: не удалось открыть файл вывода: %s\n", opts->output_file);
             container_destroy(cont);
-            exit(1);
+            logg(1, "Ошибка: не удалось открыть файл вывода: %s\n", opts->output_file);
         }
     }
 
     fprintf(out, "%-40s | %-30s | %-15s | %-4s | %-5s | %-5s | %-10s | %-8s | %-10s\n",
-            "Developer",
-            "District",
-            "Type",
-            "Year",
-            "Elevator",
-            "Trash",
-            "Apts",
-            "Floors",
-            "Area");
+            "Застройщик",
+            "Район  ",
+            "Тип",
+            "Год",
+            "Лифт",
+            "Мусоропровод",
+            "Квартиры",
+            "Этажи",
+            "Площадь");
 
     fprintf(out, "------------------------------------------------------------------------------------------------------------\n");
 
@@ -240,25 +228,25 @@ void print_mode(struct arguments *opts)
     {
         struct house *h = (struct house *)iterator_get_value(it);
 
-        const char *type_str = "unknown";
+        const char *type_str = "Неизвестно";
         if (h->house_type == panel)
-            type_str = "panel";
+            type_str = "Панельный";
         else if (h->house_type == brick)
-            type_str = "brick";
+            type_str = "Кирпичный";
         else if (h->house_type == monolithic)
-            type_str = "monolithic";
+            type_str = "Монолитный";
 
         const char *elevator_str;
         if (h->elevator == 1)
-            elevator_str = "YES";
+            elevator_str = "Да";
         else
-            elevator_str = "NO";
+            elevator_str = "Нет";
 
         const char *trash_str;
-        if (h->trash_chute == 1)
-            trash_str = "YES";
+        if (h->trash == 1)
+            trash_str = "Да";
         else
-            trash_str = "NO";
+            trash_str = "Нет";
 
         fprintf(out, "%-40.40s | %-30.30s | %-15.15s | %-4hu | %-5s | %-5s | %-10hu | %-8hu | %10.2f\n",
                 h->name_of_the_developer,

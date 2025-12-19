@@ -1,5 +1,5 @@
 #include "container.h"
-
+#include "log.h"
 struct node
 {
     void *value;
@@ -25,8 +25,7 @@ Iterator *iterator_begin(container *container)
     Iterator *iterator = malloc(sizeof(Iterator));
     if (iterator == NULL)
     {
-        fprintf(stderr, "Не удалось выделить память под итератор\n");
-        exit(1);
+        logg(1, "Не удалось выделить память под итератор\n");
     }
     iterator->element = container->head;
     return iterator;
@@ -37,8 +36,7 @@ Iterator *iterator_end(container *container)
     Iterator *iterator = malloc(sizeof(Iterator));
     if (iterator == NULL)
     {
-        fprintf(stderr, "Не удалось выделить память под итератор\n");
-        exit(1);
+        logg(1, "Не удалось выделить память под итератор\n");
     }
     iterator->element = container->tail;
     return iterator;
@@ -84,14 +82,12 @@ static struct node *create_node(const void *value, uint64_t elem_size)
     struct node *node = malloc(sizeof(struct node));
     if (node == NULL)
     {
-        fprintf(stderr, "Не удалось выделить память\n");
-        exit(1);
+        logg(1, "Не удалось выделить память\n");
     }
     node->value = malloc(elem_size);
     if (node->value == NULL)
     {
-        fprintf(stderr, "Не удалось выделить память\n");
-        exit(1);
+        logg(1, "Не удалось выделить память\n");
     }
     memcpy(node->value, value, elem_size);
     node->prev = NULL;
@@ -112,8 +108,7 @@ container *container_create(uint64_t elem_size)
     container *c = malloc(sizeof(container));
     if (c == NULL)
     {
-        fprintf(stderr, "Не удалось выделить память под контейнер\n");
-        exit(1);
+        logg(1, "Не удалось выделить память под контейнер\n");
     }
     container_init(c, elem_size);
     return c;
@@ -172,8 +167,7 @@ void container_delete_front(struct container *container)
 {
     if (container->size == 0)
     {
-        fprintf(stderr, "Нет элементов в контейнере\n");
-        exit(1);
+        logg(1, "Нет элементов в контейнере\n");
     }
     if (container->size == 1)
     {
@@ -199,8 +193,7 @@ void container_delete_back(struct container *container)
 {
     if (container->size == 0)
     {
-        fprintf(stderr, "Нет элементов в контейнере\n");
-        exit(1);
+        logg(1, "Нет элементов в контейнере\n");
     }
     if (container->size == 1)
     {
@@ -246,8 +239,7 @@ void *container_get_index(container *container, unsigned short index)
 {
     if (!container || index >= container->size)
     {
-        fprintf(stderr, "Слишком большой индекс\n");
-        exit(1);
+        logg(1, "Слишком большой индекс\n");
     }
 
     Iterator *iterator = iterator_begin(container);
@@ -261,37 +253,103 @@ void *container_get_index(container *container, unsigned short index)
     return value;
 }
 
+static void swap_nodes(struct container *c, struct node *a, struct node *b)
+{
+    if (a == b)
+        return;
+
+    if (b->next == a)
+    {
+        struct node *tmp = a;
+        a = b;
+        b = tmp;
+    }
+
+    if (a->next == b)
+    {
+        struct node *a_prev = a->prev;
+        struct node *b_next = b->next;
+
+        if (a_prev)
+            a_prev->next = b;
+        else
+            c->head = b;
+        if (b_next)
+            b_next->prev = a;
+        else
+            c->tail = a;
+
+        b->prev = a_prev;
+        a->next = b_next;
+
+        b->next = a;
+        a->prev = b;
+        return;
+    }
+
+    struct node *a_prev = a->prev;
+    struct node *a_next = a->next;
+    struct node *b_prev = b->prev;
+    struct node *b_next = b->next;
+
+    if (a_prev)
+        a_prev->next = b;
+    else
+        c->head = b;
+    if (a_next)
+        a_next->prev = b;
+    else
+        c->tail = b;
+
+    if (b_prev)
+        b_prev->next = a;
+    else
+        c->head = a;
+    if (b_next)
+        b_next->prev = a;
+    else
+        c->tail = a;
+
+    a->prev = b_prev;
+    a->next = b_next;
+
+    b->prev = a_prev;
+    b->next = a_next;
+}
+
 void container_swap(container *cont, unsigned short i, unsigned short j)
 {
     struct container *c = (struct container *)cont;
-
-    if (i >= c->size || j >= c->size)
+    if (!c || i >= c->size || j >= c->size)
     {
-        fprintf(stderr, "Нет таких индексов\n");
+        logg(0, "Нет таких индексов\n");
         return;
     }
     if (i == j)
         return;
 
+    if (i > j)
+    {
+        unsigned short t = i;
+        i = j;
+        j = t;
+    }
+
     struct node *node_i = c->head;
     struct node *node_j = c->head;
-
-    for (unsigned short k = 0; k < i; k++)
+    for (unsigned short k = 0; k < i; ++k)
         node_i = node_i->next;
-    for (unsigned short k = 0; k < j; k++)
+    for (unsigned short k = 0; k < j; ++k)
         node_j = node_j->next;
 
-    void *temp = node_i->value;
-    node_i->value = node_j->value;
-    node_j->value = temp;
+    swap_nodes(c, node_i, node_j);
 }
 
 void container_insert_at(struct container *c, unsigned short index, const void *value)
 {
     if (index > c->size)
     {
-        fprintf(stderr, "Индекс слишком большой\n");
-        exit(1);
+        logg(1, "Индекс слишком большой\n");
     }
 
     if (index == 0)
@@ -323,8 +381,7 @@ void container_delete_at(struct container *c, unsigned short index)
 {
     if (index >= c->size)
     {
-        fprintf(stderr, "Индекс слишком большой\n");
-        exit(1);
+        logg(1, "Индекс слишком большой\n");
     }
 
     if (index == 0)
@@ -339,10 +396,7 @@ void container_delete_at(struct container *c, unsigned short index)
     }
 
     struct node *current = c->head;
-    for (unsigned short i = 0; i < index; ++i)
-    {
-        current = current->next;
-    }
+    for (unsigned short i = 0; i++ < index; current = current->next)
 
     current->prev->next = current->next;
     current->next->prev = current->prev;

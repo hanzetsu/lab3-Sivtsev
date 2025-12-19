@@ -62,11 +62,11 @@ int comparator(const void *a, const void *b)
         }
     }
 
-    if (house_a->trash_chute > house_b->trash_chute)
+    if (house_a->trash > house_b->trash)
     {
         return 1;
     }
-    else if (house_a->trash_chute < house_b->trash_chute)
+    else if (house_a->trash < house_b->trash)
     {
         return -1;
     }
@@ -83,11 +83,6 @@ int comparator(const void *a, const void *b)
 static const char *developers[] = {"ПИК", "Самолёт", "ЛСР", "Донстрой", "Группа Эталон"};
 static const char *districts[] = {"ЦАО", "САО", "ЮАО", "ЗАО", "ЮЗАО"};
 
-static enum type_of_house random_house_type(void)
-{
-    return rand() % 3;
-}
-
 struct house generate_random_house(void)
 {
     struct house h;
@@ -95,12 +90,12 @@ struct house generate_random_house(void)
     h.name_of_the_developer[MAX_STRING_LEN - 1] = '\0';
     strncpy(h.name_of_microdistrict, districts[rand() % 5], MAX_STRING_LEN - 1);
     h.name_of_microdistrict[MAX_STRING_LEN - 1] = '\0';
-    h.house_type = random_house_type();
-    h.year_built = 1950 + rand() % 75;
+    h.house_type = rand() % 3;
+    h.year_built = year_built_min + rand() % 75;
     h.elevator = rand() % 2;
-    h.trash_chute = rand() % 2;
-    h.number_of_apartments = 50 + rand() % 451;
-    h.number_of_floors = 5 + rand() % 26;
-    h.average_apartment_area = 20 + (rand() % 6000) / 100.0f;
+    h.trash = rand() % 2;
+    h.number_of_apartments = number_of_apartments_min + rand() % 451;
+    h.number_of_floors = number_of_floors_min + rand() % 26;
+    h.average_apartment_area = average_apartment_area_min + (rand() % 6000) / 100.0f;
     return h;
 }
