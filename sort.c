@@ -38,7 +38,7 @@ static int partition(struct container *cont, int low, int high,
         void *current = container_get_index(cont, j);
         int cmp_result = cmp(current, pivot);
         
-        if (cmp_result <= 0)  // Убрали проверку descending
+        if (cmp_result <= 0) 
         {
             i++;
             if (i != j)

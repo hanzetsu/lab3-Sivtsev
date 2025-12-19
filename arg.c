@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "log.h"
 #include <limits.h>
 
 int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
@@ -13,8 +14,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
         {
             if (opts->mode != NULL)
             {
-                fprintf(stderr, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
-                return 1;
+                logg(1, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
             }
             opts->mode = "sort";
         }
@@ -22,8 +22,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
         {
             if (opts->mode != NULL)
             {
-                fprintf(stderr, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
-                return 1;
+                logg(1, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
             }
             if (i + 1 < argcount)
             {
@@ -32,21 +31,18 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
                 unsigned long temp = strtoul(argvector[i + 1], &end, 10);
                 if (*end != '\0')
                 {
-                    fprintf(stderr, "Ошибка: строка содержит недопустимые символы\n");
-                    return 1;
+                    logg(1, "Ошибка: строка содержит недопустимые символы\n");
                 }
                 else if (temp > USHRT_MAX || temp == 0)
                 {
-                    fprintf(stderr, "Ошибка: число должно быть в диапазоне 1..%d\n", USHRT_MAX);
-                    return 1;
+                    logg(1, "Ошибка: число должно быть в диапазоне 1..%d\n", USHRT_MAX);
                 }
                 else
                     opts->generate_N = (unsigned short)temp;
             }
             else
             {
-                fprintf(stderr, "Вы не ввели параметр после флага\n");
-                return 1;
+                logg(1, "Вы не ввели параметр после флага\n");
             }
             i++;
             opts->mode = "generate";
@@ -56,8 +52,7 @@ int get_arguments_mode(struct arguments *opts, int argcount, char *argvector[])
             {
                 if (opts->mode != NULL)
                 {
-                    fprintf(stderr, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
-                    return 1;
+                    logg(1, "Ошибка: можно указать только один режим (--sort, --generate, --print)\n");
                 }
 
                 opts->mode = "print";
@@ -84,8 +79,7 @@ int get_arguments_input_output_files(struct arguments *opts, int argcount, char 
             }
             else
             {
-                fprintf(stderr, "Ошибка: для флага -o требуется имя файла\n");
-                return 1;
+                logg(1, "Ошибка: для флага -o требуется имя файла\n");
             }
         }
         else if (strncmp(argvector[i], "--in=", 5) == 0)
@@ -101,8 +95,7 @@ int get_arguments_input_output_files(struct arguments *opts, int argcount, char 
             }
             else
             {
-                fprintf(stderr, "Ошибка: для флага -i требуется имя файла\n");
-                return 1;
+                logg(1, "Ошибка: для флага -i требуется имя файла\n");
             }
         }
     }
@@ -118,8 +111,7 @@ int get_arguments_type_of_sort(struct arguments *opts, int argcount, char *argve
                 opts->type_of_sort = argvector[i] + 7;
             else
             {
-                fprintf(stderr, "Ошибка: неправильный тип сортировки");
-                return 1;
+                logg(1, "Ошибка: неправильный тип сортировки");
             }
         }
         else if (strcmp(argvector[i], "-t") == 0)
@@ -132,15 +124,13 @@ int get_arguments_type_of_sort(struct arguments *opts, int argcount, char *argve
                     opts->type_of_sort = "desc";
                 else
                 {
-                    fprintf(stderr, "Ошибка: неправильный тип сортировки. Используйте A для возрастания или D для убывания.\n");
-                    return 1;
+                    logg(1, "Ошибка: неправильный тип сортировки. Используйте A для возрастания или D для убывания.\n");
                 }
                 i++;
             }
             else
             {
-                fprintf(stderr, "Вы не ввели параметр после флага\n");
-                return 1;
+                logg(1, "Вы не ввели параметр после флага\n");
             }
         }
     }
