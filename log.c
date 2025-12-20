@@ -3,17 +3,29 @@
 #include <stdlib.h>
 #include "log.h"
 
-void logg (log_lvl lvl, const char *format, ...) {
+void logg(log_lvl lvl, const char *format, ...)
+{
     va_list args;
 
     const char *log_filename = "log.txt";
     FILE *log_file = fopen(log_filename, "a");
+    if (log_file == NULL)
+    {
+        fprintf(stderr, "Не удалось открыть файл лога: %s\n", log_filename);
+        if (lvl == DANGER)
+        {
+            exit(EXIT_FAILURE);
+        }
+        return;
+    }
 
-    va_start(args,format);
-    vfprintf (log_file, format, args);
+    va_start(args, format);
+    vfprintf(log_file, format, args);
     va_end(args);
     fclose(log_file);
-if(lvl == DANGER) {
-    exit(EXIT_FAILURE);
-}
+
+    if (lvl == DANGER)
+    {
+        exit(EXIT_FAILURE);
+    }
 }
